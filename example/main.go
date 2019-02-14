@@ -24,7 +24,7 @@ type partSrc struct {
 
 var sampleParticleEffect *particles.Effect = &particles.Effect{
 	MaxParticles:        3000,
-	ParticleEmitRate:    200,
+	ParticleEmitRate:    300,
 	MaxLife:             1.6,
 	MinLife:             0.15,
 	StartSize:           engo.Point{0.5, 0.5},
@@ -61,14 +61,18 @@ func (*ParticleScene) Preload() {}
 
 func (*ParticleScene) Setup(u engo.Updater) {
 	particleSystem := new(particles.System)
+	rotateSystem := new(RotateSystem)
 
 	world, _ := u.(*ecs.World)
 	world.AddSystem(new(common.RenderSystem))
 	world.AddSystem(particleSystem)
+	world.AddSystem(rotateSystem)
 
 	particleSystem.AddEntity(newSource(200, 600))
-	particleSystem.AddEntity(newSource(400, 600))
 	particleSystem.AddEntity(newSource(600, 600))
+	src := newSource(400, 400)
+	particleSystem.AddEntity(src)
+	rotateSystem.Add(&src.BasicEntity, &src.SpaceComponent)
 }
 
 func main() {
