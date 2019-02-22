@@ -12,7 +12,7 @@ import (
 type System struct {
 	w     *ecs.World
 	rs    *common.RenderSystem
-	items map[ecs.BasicEntity]*particleData
+	items map[uint64]*particleData
 	mat   *engo.Matrix
 }
 
@@ -32,7 +32,7 @@ func (ps *System) Update(dt float32) {
 	if len(ps.items) == 0 {
 		return
 	}
-	for basic, data := range ps.items {
+	for _, data := range ps.items {
 		data.prepare()
 
 		//number of new particles to spawn
@@ -51,7 +51,7 @@ func (ps *System) Update(dt float32) {
 				ps.spawnParticle(data, pt)
 			}
 		} else if data.allDead && data.Component.RemoveWhenDead {
-			ps.w.RemoveEntity(basic)
+			ps.w.RemoveEntity(*data.srcEntity)
 		}
 		//update all particles:
 		for _, p := range data.particles {
@@ -176,9 +176,9 @@ func (ps *System) updateParticle(p *particle, d *particleData, dt float32) {
 // Remove from System interface
 func (ps *System) Remove(e ecs.BasicEntity) {
 	if ps.items != nil {
-		if data, ok := ps.items[e]; ok {
+		if data, ok := ps.items[e.ID()]; ok {
 			ps.rs.Remove(data.BasicEntity)
-			delete(ps.items, e)
+			delete(ps.items, e.ID())
 		}
 	}
 }
@@ -199,7 +199,7 @@ func (ps *System) AddByInterface(i ecs.Identifier) {
 // Add adds an entity to the particle system.
 func (ps *System) Add(basic *ecs.BasicEntity, space *common.SpaceComponent, particle *Component) {
 	if ps.items == nil {
-		ps.items = make(map[ecs.BasicEntity]*particleData)
+		ps.items = make(map[uint64]*particleData)
 	}
 
 	data := &particleData{
@@ -207,6 +207,7 @@ func (ps *System) Add(basic *ecs.BasicEntity, space *common.SpaceComponent, part
 		SpaceComponent:  space,
 		RenderComponent: common.RenderComponent{},
 		Component:       particle,
+		srcEntity:       basic,
 	}
 	data.lastCenter = data.Center()
 	data.prepare()
@@ -214,5 +215,5 @@ func (ps *System) Add(basic *ecs.BasicEntity, space *common.SpaceComponent, part
 		panic("the particle system needs a rendersystem!")
 	}
 	ps.rs.Add(&data.BasicEntity, &data.RenderComponent, data.SpaceComponent)
-	ps.items[*basic] = data
+	ps.items[basic.ID()] = data
 }

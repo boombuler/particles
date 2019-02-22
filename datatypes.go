@@ -17,6 +17,7 @@ type particleData struct {
 	shader     common.Shader
 	allDead    bool
 	lastCenter engo.Point
+	srcEntity  *ecs.BasicEntity
 }
 
 type particle struct {
