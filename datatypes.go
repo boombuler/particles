@@ -1,10 +1,10 @@
 package particles
 
 import (
-	"engo.io/ecs"
-	"engo.io/engo"
-	"engo.io/engo/common"
-	"engo.io/gl"
+	"github.com/EngoEngine/ecs"
+	"github.com/EngoEngine/engo"
+	"github.com/EngoEngine/engo/common"
+	"github.com/EngoEngine/gl"
 )
 
 type particleData struct {

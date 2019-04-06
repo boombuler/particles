@@ -1,8 +1,8 @@
 package particles
 
 import (
-	"engo.io/ecs"
-	"engo.io/engo/common"
+	"github.com/EngoEngine/ecs"
+	"github.com/EngoEngine/engo/common"
 )
 
 // particleShader wraps an existing shader to prevent the sorting of thousands of particles within the rendersystem.

@@ -4,8 +4,8 @@ import (
 	"image/color"
 	"math/rand"
 
-	"engo.io/engo"
-	"engo.io/engo/common"
+	"github.com/EngoEngine/engo"
+	"github.com/EngoEngine/engo/common"
 )
 
 // Effect descripes a particle effect and can be reused by multiple particle emitting entities.
